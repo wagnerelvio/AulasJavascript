@@ -1,0 +1,31 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <title>Exemplo Href</title>
+</head>
+<body>
+
+    <!-- Link original apontando para o Google -->
+    <a id="meuLink" href="https://www.google.com">Clique aqui</a>
+
+    <br><br>
+    
+    <!-- Botão que aciona a mudança -->
+    <button onclick="alterarLink()">Mudar para Bing</button>
+
+    <script>
+        function alterarLink() {
+            // 1. Seleciona o elemento pelo ID
+            var linkElemento = document.getElementById("meuLink");
+            
+            // 2. Modifica a propriedade href
+            linkElemento.href = "https://www.bing.com";
+            
+            // 3. (Opcional) Modifica o texto do link para refletir a mudança
+            linkElemento.innerHTML = "Ir para o Bing";
+        }
+    </script>
+
+</body>
+</html>
