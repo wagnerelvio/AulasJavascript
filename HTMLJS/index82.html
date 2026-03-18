@@ -1,0 +1,75 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta http-equiv="refresh" content="5">
+  <title>Objeto Carro em JavaScript</title>
+
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      background: linear-gradient(135deg, #dbeafe, #bfdbfe, #93c5fd);
+      margin: 0;
+      padding: 0;
+    }
+
+    .container {
+      width: 70%;
+      max-width: 700px;
+      margin: 60px auto;
+      background-color: white;
+      padding: 30px;
+      border-radius: 15px;
+      box-shadow: 0 6px 18px rgba(0, 0, 0, 0.2);
+      text-align: center;
+    }
+
+    h1 {
+      color: #1d4ed8;
+      margin-bottom: 20px;
+    }
+
+    #dados {
+      font-size: 22px;
+      color: #111827;
+      background-color: #eff6ff;
+      padding: 15px;
+      border-left: 6px solid #2563eb;
+      border-radius: 8px;
+    }
+
+    hr {
+      border: none;
+      height: 2px;
+      background-color: #93c5fd;
+      margin-top: 25px;
+    }
+  </style>
+</head>
+<body>
+
+  <div class="container">
+    <h1>Dados do Carro</h1>
+
+    <p id="dados">Dados do Carro: </p>
+
+    <script>
+      var meuCarro = new Object();
+      meuCarro.marca = 'Volkswagen';
+      meuCarro.modelo = 'Gol';
+      meuCarro.cor = 'Branco';
+      meuCarro.ano = 2025;
+
+      document.getElementById('dados').innerHTML +=
+        meuCarro.marca + ' - ' +
+        meuCarro.modelo + ' - ' +
+        meuCarro.cor + ' - ' +
+        meuCarro.ano;
+    </script>
+
+    <hr>
+  </div>
+
+</body>
+</html>
