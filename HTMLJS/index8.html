@@ -1,0 +1,31 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta http-equiv="refresh" content="5">
+  <title>Objeto Carro em JavaScript</title>
+</head>
+<body>
+
+  <h1>Dados do Carro</h1>
+
+  <p id="dados">Dados do Carro: </p>
+
+  <script>
+    var meuCarro = new Object();
+    meuCarro.marca = 'Volkswagen';
+    meuCarro.modelo = 'Gol';
+    meuCarro.cor = 'Branco';
+    meuCarro.ano = 2025;
+
+    document.getElementById('dados').innerHTML += 
+      meuCarro.marca + ' - ' + 
+      meuCarro.modelo + ' - ' + 
+      meuCarro.cor + ' - ' + 
+      meuCarro.ano;
+  </script>
+
+  <hr>
+</body>
+</html>
