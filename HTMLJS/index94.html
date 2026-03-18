@@ -1,0 +1,25 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <title>Exemplo Href</title>
+</head>
+<body>
+
+    <div id="areaLinks">
+        <a id="meuLink" href="https://www.google.com" target="_blank">https://www.google.com</a>
+    </div>
+
+    <br>
+    <button onclick="alterarLink()">Adicionar Bing abaixo</button>
+
+    <script>
+        function alterarLink() {
+            var area = document.getElementById("areaLinks");
+
+            area.innerHTML += '<br><a href="https://www.bing.com" target="_blank">https://www.bing.com</a>';
+        }
+    </script>
+
+</body>
+</html>
