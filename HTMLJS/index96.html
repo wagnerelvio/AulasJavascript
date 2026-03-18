@@ -1,0 +1,25 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <title>Exemplo Href</title>
+</head>
+<body>
+
+    <div id="areaLinks"></div>
+
+    <button onclick="mostrarLinks()">Mostrar links</button>
+
+    <script>
+        function mostrarLinks() {
+            var area = document.getElementById("areaLinks");
+
+            area.innerHTML = `
+                <div><a href="https://www.google.com" target="_blank">https://www.google.com</a></div>
+                <div><a href="https://www.yahoo.com" target="_blank">https://www.yahoo.com</a></div>
+            `;
+        }
+    </script>
+
+</body>
+</html>
