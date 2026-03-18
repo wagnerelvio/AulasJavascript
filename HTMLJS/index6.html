@@ -1,0 +1,47 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Objeto Carro em JavaScript</title>
+</head>
+<body>
+
+  <h1>Dados do Carro</h1>
+
+  <p id="marca"></p>
+  <p id="modelo"></p>
+  <p id="ano"></p>
+  <p id="cor"></p>
+  <p id="placa"></p>
+  <p id="tipo"></p>
+  <p id="cambio"></p>
+  <p id="motorizacao"></p>
+  <p id="chassi"></p>
+
+  <script>
+    // Variáveis com os atributos do carro
+    let marca = "Toyota";
+    let modelo = "Corolla";
+    let ano = 2023;
+    let cor = "Prata";
+    let placa = "ABC-1234";
+    let tipo = "Sedan";
+    let cambio = "Automático";
+    let motorizacao = "Híbrido";
+    let chassi = "9BWZZZ377VT004251";
+
+    // Mostrando os valores na página com getElementById
+    document.getElementById("marca").innerHTML = "Marca: " + marca;
+    document.getElementById("modelo").innerHTML = "Modelo: " + modelo;
+    document.getElementById("ano").innerHTML = "Ano: " + ano;
+    document.getElementById("cor").innerHTML = "Cor: " + cor;
+    document.getElementById("placa").innerHTML = "Placa: " + placa;
+    document.getElementById("tipo").innerHTML = "Tipo: " + tipo;
+    document.getElementById("cambio").innerHTML = "Câmbio: " + cambio;
+    document.getElementById("motorizacao").innerHTML = "Motorização: " + motorizacao;
+    document.getElementById("chassi").innerHTML = "Chassi: " + chassi;
+  </script>
+
+</body>
+</html>
