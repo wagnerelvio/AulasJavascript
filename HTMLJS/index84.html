@@ -1,0 +1,125 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta http-equiv="refresh" content="5">
+  <title>Objeto Carro em JavaScript</title>
+
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      background: linear-gradient(135deg, #dbeafe, #bfdbfe, #93c5fd);
+      margin: 0;
+      padding: 0;
+    }
+
+    .container {
+      width: 80%;
+      max-width: 900px;
+      margin: 40px auto;
+      background-color: white;
+      padding: 30px;
+      border-radius: 16px;
+      box-shadow: 0 6px 18px rgba(0, 0, 0, 0.2);
+    }
+
+    h1, h2 {
+      color: #1d4ed8;
+      text-align: center;
+    }
+
+    #dados, #carrosdaFormula1 {
+      font-size: 20px;
+      color: #111827;
+      background-color: #eff6ff;
+      padding: 15px;
+      border-left: 6px solid #2563eb;
+      border-radius: 8px;
+      margin-bottom: 20px;
+    }
+
+    #carrosdaFormula1 {
+      line-height: 1.8;
+    }
+
+    .equipe {
+      margin-bottom: 10px;
+      padding: 10px;
+      background-color: #f8fafc;
+      border-radius: 8px;
+    }
+
+    .nome-equipe {
+      font-weight: bold;
+      color: #1e3a8a;
+    }
+
+    hr {
+      border: none;
+      height: 2px;
+      background-color: #e0200b;
+      margin: 25px 0;
+    }
+
+ 
+
+
+  </style>
+</head>
+<body>
+
+  <div class="container">
+    <h1>Dados do Carro</h1>
+    <p id="dados">Dados do Carro: </p>
+
+    <hr>
+
+    <h2>Equipes e Pilotos da Fórmula 1 - 2026</h2>
+    <div id="carrosdaFormula1"></div>
+  </div>
+
+  <script>
+    var meuCarro = new Object();
+    meuCarro.marca = 'Volkswagen';
+    meuCarro.modelo = 'Gol';
+    meuCarro.cor = 'Branco';
+    meuCarro.ano = 2025;
+    meuCarro.chassi = '9BWZZZ377VT004251';
+
+    document.getElementById('dados').innerHTML +=
+      meuCarro.marca + ' - ' +
+      meuCarro.modelo + ' - ' +
+      meuCarro.cor + ' - ' +
+      meuCarro.ano + ' - ' +
+      meuCarro.chassi;
+
+    var equipesF1 = [
+      { equipe: 'McLaren', pilotos: ['Lando Norris', 'Oscar Piastri'] },
+      { equipe: 'Mercedes', pilotos: ['George Russell', 'Kimi Antonelli'] },
+      { equipe: 'Red Bull Racing', pilotos: ['Max Verstappen', 'Isack Hadjar'] },
+      { equipe: 'Ferrari', pilotos: ['Charles Leclerc', 'Lewis Hamilton'] },
+      { equipe: 'Williams', pilotos: ['Carlos Sainz', 'Alexander Albon'] },
+      { equipe: 'Racing Bulls', pilotos: ['Liam Lawson', 'Arvid Lindblad'] },
+      { equipe: 'Aston Martin', pilotos: ['Fernando Alonso', 'Lance Stroll'] },
+      { equipe: 'Haas F1 Team', pilotos: ['Esteban Ocon', 'Oliver Bearman'] },
+      { equipe: 'Alpine', pilotos: ['Pierre Gasly', 'Franco Colapinto'] },
+      { equipe: 'Audi', pilotos: ['Nico Hulkenberg', 'Gabriel Bortoleto'] },
+      { equipe: 'Cadillac', pilotos: ['Sergio Perez', 'Valtteri Bottas'] }
+    ];
+
+    var listaF1 = '';
+
+    for (var i = 0; i < equipesF1.length; i++) {
+      listaF1 +=
+        '<div class="equipe">' +
+          '<span class="nome-equipe">' + equipesF1[i].equipe + '</span><br>' +
+          'Pilotos: ' + equipesF1[i].pilotos[0] + ' e ' + equipesF1[i].pilotos[1] +
+        '</div>';
+    }
+
+    document.getElementById('carrosdaFormula1').innerHTML = listaF1;
+  </script>
+<hr>
+</body>
+</html>
