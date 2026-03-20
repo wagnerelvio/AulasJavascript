@@ -1,0 +1,72 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8"> <!-- Define a codificação de caracteres -->
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"> <!-- Ajusta a página para dispositivos móveis -->
+  <title>Exemplo de Métodos do DOM</title> <!-- Título da aba do navegador -->
+
+  <style>
+    body {
+      font-family: Arial, sans-serif; /* Define a fonte do texto */
+      margin: 20px; /* Adiciona margem ao redor do conteúdo */
+    }
+
+    .caixa {
+      padding: 10px; /* Espaçamento interno */
+      margin: 5px 0; /* Espaçamento externo vertical */
+      border: 1px solid #333; /* Borda ao redor da caixa */
+    }
+
+    .menu li {
+      color: blue; /* Cor inicial dos itens da lista */
+    }
+  </style>
+</head>
+<body>
+
+  <h1 id="titulo">Título original</h1> <!-- Título com id para ser acessado pelo JavaScript -->
+
+  <p>Parágrafo 1</p> <!-- Primeiro parágrafo -->
+  <p>Parágrafo 2</p> <!-- Segundo parágrafo -->
+
+  <div class="caixa">Caixa 1</div> <!-- Primeira div com classe caixa -->
+  <div class="caixa">Caixa 2</div> <!-- Segunda div com classe caixa -->
+
+  <ul class="menu"> <!-- Lista com classe menu -->
+    <li>Item 1</li> <!-- Primeiro item da lista -->
+    <li>Item 2</li> <!-- Segundo item da lista -->
+    <li>Item 3</li> <!-- Terceiro item da lista -->
+  </ul>
+
+  <button onclick="usarMetodosDOM()">Executar métodos DOM</button> <!-- Botão que chama a função JS -->
+
+  <script>
+    function usarMetodosDOM() { // Função executada ao clicar no botão
+
+      // 1. Seleciona um elemento pelo id
+      let titulo = document.getElementById("titulo");
+      titulo.textContent = "Título alterado com getElementById()"; // Altera o texto do título
+      titulo.style.color = "red"; // Altera a cor do título
+
+      // 2. Seleciona todos os elementos da tag <p>
+      let paragrafos = document.getElementsByTagName("p");
+      for (let i = 0; i < paragrafos.length; i++) { // Percorre todos os parágrafos
+        paragrafos[i].style.fontWeight = "bold"; // Deixa o texto em negrito
+      }
+
+      // 3. Seleciona todos os elementos com a classe "caixa"
+      let caixas = document.getElementsByClassName("caixa");
+      for (let i = 0; i < caixas.length; i++) { // Percorre todas as caixas
+        caixas[i].style.backgroundColor = "lightgray"; // Muda a cor de fundo
+      }
+
+      // 4. Seleciona todos os elementos <li> dentro de .menu
+      let itens = document.querySelectorAll(".menu li");
+      itens.forEach(function(item) { // Percorre todos os itens encontrados
+        item.style.color = "green"; // Altera a cor dos itens
+      });
+    }
+  </script>
+
+</body>
+</html>
