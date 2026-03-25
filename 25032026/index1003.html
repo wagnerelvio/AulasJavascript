@@ -1,0 +1,31 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <title>Exemplo com getElementsByTagName</title>
+</head>
+<body>
+
+  <h2>Lista de itens</h2>
+
+  <ul>
+    <li>Item 1</li>
+    <li>Item 2</li>
+    <li>Item 3</li>
+  </ul>
+
+  <button onclick="destacarItens()">Destacar itens</button>
+
+  <script>
+    function destacarItens() {
+      let itens = document.getElementsByTagName("li");
+
+      for (let i = 0; i < itens.length; i++) {
+        itens[i].style.fontWeight = "normal";  //normal,   bold, bolder, lighter
+      }
+    }
+  </script>
+
+</body>
+</html>
+
