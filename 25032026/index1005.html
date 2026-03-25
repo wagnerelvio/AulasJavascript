@@ -1,0 +1,33 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <title>Exemplo com getElementsByTagName</title>
+</head>
+<body>
+
+  <h1>Exemplo de DOM</h1>
+
+  <p>Primeiro parágrafo.</p>
+  <p>Segundo parágrafo.</p>
+  <p>Terceiro parágrafo.</p>
+
+  <button onclick="alterarParagrafos()">Clique aqui</button>
+
+  <script>
+    function alterarParagrafos() {
+      let paragrafos = document.getElementsByTagName("p");
+
+      paragrafos[0].style.color = "red";
+      paragrafos[0].innerHTML = "Primeiro parágrafo em vermelho";
+
+      paragrafos[1].style.color = "blue";
+      paragrafos[1].innerHTML = "Segundo parágrafo em azul";
+
+      paragrafos[2].style.color = "green";
+      paragrafos[2].innerHTML = "Terceiro parágrafo em verde";
+    }
+  </script>
+
+</body>
+</html>
