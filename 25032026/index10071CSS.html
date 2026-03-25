@@ -1,0 +1,22 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <title>CSS com DOM</title>
+</head>
+<body>
+  <p id="texto">Texto que terá estilo alterado.</p>
+  <button onclick="mudarEstilo()">Alterar estilo</button>
+
+  <script>
+    function mudarEstilo() {
+      let elemento = document.getElementById("texto");
+      elemento.style.color = "blue";
+      elemento.style.fontSize = "24px";
+      elemento.style.backgroundColor = "lightyellow";
+      elemento.style.padding = "10px";
+      elemento.style.border = "2px solid black";
+    }
+  </script>
+</body>
+</html>
