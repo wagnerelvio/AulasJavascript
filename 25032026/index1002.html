@@ -1,0 +1,29 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <title>Exemplo com getElementsByTagName</title>
+</head>
+<body>
+
+  <h1>Exemplo de DOM</h1>
+
+  <p>Primeiro parágrafo.</p>
+  <p>Segundo parágrafo.</p>
+  <p>Terceiro parágrafo.</p>
+
+  <button onclick="alterarParagrafos()">Clique aqui</button>
+
+  <script>
+    function alterarParagrafos() {
+      let paragrafos = document.getElementsByTagName("p");
+
+      for (let i = 0; i < paragrafos.length; i++) {
+        paragrafos[i].style.color = "blue";
+        paragrafos[i].innerHTML = "Parágrafo alterado com JavaScript";
+      }
+    }
+  </script>
+
+</body>
+</html>
