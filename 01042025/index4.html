@@ -1,0 +1,117 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Temperatura por cidade com AJAX</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      margin: 30px;
+    }
+
+    input, button {
+      padding: 10px;
+      font-size: 16px;
+      margin-top: 10px;
+    }
+
+    #cidade {
+      width: 250px;
+    }
+
+    #resultado {
+      margin-top: 20px;
+      padding: 15px;
+      border: 1px solid #ccc;
+      background-color: #f4f4f4;
+      width: 350px;
+    }
+  </style>
+</head>
+<body>
+
+  <h1>Consulta de temperatura por cidade</h1>
+  <p>Digite o nome de uma cidade e clique no botão.</p>
+
+  <input type="text" id="cidade" placeholder="Ex: São Paulo">
+  <button onclick="buscarTemperatura()">Buscar temperatura</button>
+
+  <div id="resultado">A temperatura aparecerá aqui.</div>
+
+  <script>
+    function buscarTemperatura() {
+      var cidade = document.getElementById("cidade").value.trim();
+      var resultado = document.getElementById("resultado");
+
+      if (cidade === "") {
+        resultado.innerHTML = "Digite o nome de uma cidade.";
+        return;
+      }
+
+      resultado.innerHTML = "Buscando dados...";
+
+      var xhrGeo = new XMLHttpRequest();
+
+      var urlGeo = "https://geocoding-api.open-meteo.com/v1/search?name=" 
+                   + encodeURIComponent(cidade) + "&count=1&language=pt&format=json";
+
+      xhrGeo.open("GET", urlGeo, true);
+
+      xhrGeo.onreadystatechange = function () {
+        if (xhrGeo.readyState === 4) {
+          if (xhrGeo.status === 200) {
+            var geo = JSON.parse(xhrGeo.responseText);
+
+            if (!geo.results || geo.results.length === 0) {
+              resultado.innerHTML = "Cidade não encontrada.";
+              return;
+            }
+
+            var latitude = geo.results[0].latitude;
+            var longitude = geo.results[0].longitude;
+            var nomeCidade = geo.results[0].name;
+            var pais = geo.results[0].country;
+
+            var xhrClima = new XMLHttpRequest();
+
+            var urlClima = "https://api.open-meteo.com/v1/forecast?latitude="
+                          + latitude
+                          + "&longitude="
+                          + longitude
+                          + "&current=temperature_2m";
+
+            xhrClima.open("GET", urlClima, true);
+
+            xhrClima.onreadystatechange = function () {
+              if (xhrClima.readyState === 4) {
+                if (xhrClima.status === 200) {
+                  var clima = JSON.parse(xhrClima.responseText);
+
+                  resultado.innerHTML =
+                    "<strong>Cidade:</strong> " + nomeCidade + "<br>" +
+                    "<strong>País:</strong> " + pais + "<br>" +
+                    "<strong>Latitude:</strong> " + latitude + "<br>" +
+                    "<strong>Longitude:</strong> " + longitude + "<br>" +
+                    "<strong>Temperatura atual:</strong> " 
+                    + clima.current.temperature_2m + " °C";
+                } else {
+                  resultado.innerHTML = "Erro ao consultar a temperatura.";
+                }
+              }
+            };
+
+            xhrClima.send();
+
+          } else {
+            resultado.innerHTML = "Erro ao localizar a cidade.";
+          }
+        }
+      };
+
+      xhrGeo.send();
+    }
+  </script>
+
+</body>
+</html>
