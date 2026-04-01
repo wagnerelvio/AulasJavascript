@@ -1,0 +1,33 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <title>Exemplo Canvas</title>
+</head>
+<body>
+
+  <canvas id="meuCanvas" width="400" height="200"
+          style="border:1px solid #000;"></canvas>
+
+  <script>
+    const canvas = document.getElementById("meuCanvas");
+    const ctx = canvas.getContext("2d");
+
+    // Retangulo azul
+    ctx.fillStyle = "blue";
+    ctx.fillRect(20, 20, 120, 60);
+
+    // Texto
+    ctx.font = "20px Arial";
+    ctx.fillStyle = "black";
+    ctx.fillText("Ola, Canvas!", 160, 55);
+
+    // Circulo vermelho
+    ctx.beginPath();
+    ctx.arc(320, 50, 30, 0, 2 * Math.PI);
+    ctx.fillStyle = "red";
+    ctx.fill();
+  </script>
+
+</body>
+</html>
