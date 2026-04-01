@@ -1,0 +1,34 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <title>Exemplo AJAX</title>
+</head>
+<body>
+
+  <button onclick="buscarDados()">Buscar Dados</button>
+  <p id="resultado"></p>
+
+  <script>
+    function buscarDados() {
+      const xhr = new XMLHttpRequest();
+
+      xhr.open("GET", "https://viacep.com.br/ws/01001000/json/", true);
+
+      xhr.onload = function () {
+        if (xhr.status === 200) {
+          const dados = JSON.parse(xhr.responseText);
+          document.getElementById("resultado").innerHTML =
+            "Logradouro: " + dados.logradouro;
+        } else {
+          document.getElementById("resultado").innerHTML =
+            "Erro na requisicao.";
+        }
+      };
+
+      xhr.send();
+    }
+  </script>
+
+</body>
+</html>
