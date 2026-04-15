@@ -1,0 +1,77 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <title>Teste AJAX com JSONPlaceholder</title>
+    <style>
+        body { font-family: sans-serif; max-width: 500px; margin: 40px auto; line-height: 1.6; }
+        .controles { background: #f4f4f4; padding: 20px; border-radius: 8px; margin-bottom: 20px; }
+        input { padding: 8px; width: 60%; }
+        button { padding: 8px 12px; cursor: pointer; background: #28a745; color: white; border: none; border-radius: 4px; }
+        li { background: #fff; border-bottom: 1px solid #ddd; padding: 10px; list-style: none; display: flex; justify-content: space-between; }
+        .concluida { color: #888; text-decoration: line-through; }
+        .badge { background: #007bff; color: white; padding: 2px 6px; border-radius: 4px; font-size: 0.8em; }
+    </style>
+</head>
+<body>
+
+    <h2>Minhas Tarefas</h2>
+
+    <div class="controles">
+        <input type="text" id="novaTarefa" placeholder="Digite uma nova tarefa...">
+        <button id="btnAdicionar">Adicionar</button>
+    </div>
+
+    <ul id="listaTarefas">
+        </ul>
+
+    <script>
+        const listaUl = document.getElementById('listaTarefas');
+
+        // 1. BUSCAR TAREFAS (GET)
+        // Vamos buscar apenas as 5 primeiras tarefas para não encher a tela
+        fetch('https://jsonplaceholder.typicode.com/todos?_limit=5')
+            .then(response => response.json())
+            .then(tarefas => {
+                tarefas.forEach(tarefa => {
+                    adicionarNaTela(tarefa.title, tarefa.completed, "Servidor");
+                });
+            });
+
+        // 2. SIMULAR ENVIO (POST)
+        document.getElementById('btnAdicionar').addEventListener('click', () => {
+            const titulo = document.getElementById('novaTarefa').value;
+            if (!titulo) return;
+
+            fetch('https://jsonplaceholder.typicode.com/todos', {
+                method: 'POST',
+                body: JSON.stringify({
+                    title: titulo,
+                    completed: false,
+                    userId: 1
+                }),
+                headers: { 'Content-type': 'application/json; charset=UTF-8' }
+            })
+            .then(response => response.json())
+            .then(dadosRecebidos => {
+                // O servidor responde com o objeto criado (incluindo um ID novo)
+                console.log("Sucesso ao postar:", dadosRecebidos);
+                adicionarNaTela(dadosRecebidos.title, false, "Novo");
+                document.getElementById('novaTarefa').value = ""; // Limpa input
+            });
+        });
+
+        // Função auxiliar para colocar o HTML na tela
+        function adicionarNaTela(texto, concluida, origem) {
+            const li = document.createElement('li');
+            if (concluida) li.classList.add('concluida');
+            
+            li.innerHTML = `
+                <span>${texto}</span>
+                <span class="badge">${origem}</span>
+            `;
+            listaUl.prepend(li); // Adiciona no topo da lista
+        }
+    </script>
+</body>
+</html>
