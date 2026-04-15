@@ -1,0 +1,63 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <title>AJAX - Preservação de Estado</title>
+    <style>
+        body { font-family: sans-serif; padding: 30px; background-color: #f0f2f5; }
+        .painel { background: white; padding: 20px; border-radius: 10px; box-shadow: 0 2px 10px rgba(0,0,0,0.1); }
+        .estatico { color: #e67e22; font-weight: bold; margin-bottom: 20px; padding: 10px; border-left: 5px solid #e67e22; background: #fff5eb; }
+        .ajax-section { margin-top: 20px; padding: 15px; border: 1px dashed #3498db; }
+        #contador { font-size: 1.2em; color: #2c3e50; }
+        input { padding: 8px; width: 250px; margin-top: 10px; }
+    </style>
+</head>
+<body>
+
+    <div class="painel">
+        <div class="estatico">
+            <p>⏱️ Tempo que você está nesta página: <span id="contador">0</span> segundos</p>
+            <p>✍️ Digite algo aqui: <input type="text" placeholder="Isso não vai sumir..."> </p>
+            <small>(Se a página recarregasse, o tempo voltaria a 0 e o texto sumiria)</small>
+        </div>
+
+        <hr>
+
+        <div class="ajax-section">
+            <h3>Conteúdo Dinâmico (AJAX)</h3>
+            <p><strong>Título do Post:</strong> <span id="post-titulo">Clique no botão para carregar...</span></p>
+            <button id="btnCarregar">Buscar Novo Post</button>
+        </div>
+    </div>
+
+    <script>
+        // 1. Lógica do Cronômetro (Estado Estático)
+        let segundos = 0;
+        setInterval(() => {
+            segundos++;
+            document.getElementById('contador').innerText = segundos;
+        }, 1000);
+
+        // 2. Lógica do AJAX (Atualização Parcial)
+        document.getElementById('btnCarregar').addEventListener('click', function() {
+            const btn = this;
+            btn.innerText = "Carregando...";
+            
+            const idAleatorio = Math.floor(Math.random() * 100) + 1;
+
+            fetch(`https://jsonplaceholder.typicode.com/posts/${idAleatorio}`)
+                .then(response => response.json())
+                .then(dados => {
+                    // Atualiza APENAS o título do post
+                    document.getElementById('post-titulo').innerText = dados.title;
+                    btn.innerText = "Buscar Novo Post";
+                })
+                .catch(erro => {
+                    console.error("Erro:", erro);
+                    btn.innerText = "Erro ao carregar";
+                });
+        });
+    </script>
+
+</body>
+</html>
