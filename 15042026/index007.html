@@ -1,0 +1,63 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <title>Consulta Clima Fetch</title>
+    <style>
+        body { font-family: sans-serif; text-align: center; padding: 50px; background: #e0e4e8; }
+        .container { background: white; padding: 30px; border-radius: 15px; display: inline-block; box-shadow: 0 4px 6px rgba(0,0,0,0.1); }
+        input { padding: 10px; border: 1px solid #ccc; border-radius: 5px; }
+        button { padding: 10px 20px; background: #007bff; color: white; border: none; border-radius: 5px; cursor: pointer; }
+        #exibicao { margin-top: 20px; font-size: 1.5rem; color: #333; }
+    </style>
+</head>
+<body>
+
+    <div class="container">
+        <h2>🌡️ Termômetro Digital</h2>
+        <input type="text" id="cidade" placeholder="Digite a cidade...">
+        <button onclick="buscarClima()">Consultar</button>
+
+        <div id="exibicao">
+            </div>
+    </div>
+
+    <script>
+        function buscarClima() {
+            const cidade = document.getElementById('cidade').value;
+            const tela = document.getElementById('exibicao');
+            
+            // 1. Sua Chave e Configurações
+            const minhaApiKey = "SUA_CHAVE_AQUI"; 
+            const url = `https://api.openweathermap.org/data/2.5/weather?q=${cidade}&appid=${minhaApiKey}&units=metric&lang=pt_br`;
+
+            tela.innerHTML = "Carregando...";
+
+            // 2. O Fluxo Fetch
+            fetch(url)
+                .then(resposta => {
+                    // Verificamos se a requisição deu certo (status 200)
+                    if (!resposta.ok) {
+                        throw new Error("Cidade não encontrada");
+                    }
+                    return resposta.json(); // Converte texto em Objeto JS
+                })
+                .then(dados => {
+                    // 3. Acessando os dados específicos no JSON
+                    const temp = dados.main.temp;
+                    const descricao = dados.weather[0].description;
+                    const cidadeNome = dados.name;
+
+                    tela.innerHTML = `
+                        <strong>${cidadeNome}</strong>: ${temp}°C <br>
+                        <small style="color: #666">${descricao}</small>
+                    `;
+                })
+                .catch(erro => {
+                    tela.innerHTML = `<span style="color: red;">${erro.message}</span>`;
+                });
+        }
+    </script>
+
+</body>
+</html>
