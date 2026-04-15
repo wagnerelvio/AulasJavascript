@@ -1,0 +1,73 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Consulta de Clima AJAX</title>
+    <style>
+        body { font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; background-color: #f4f7f6; display: flex; justify-content: center; padding-top: 50px; }
+        .card { background: white; padding: 2rem; border-radius: 12px; box-shadow: 0 4px 15px rgba(0,0,0,0.1); width: 100%; max-width: 400px; text-align: center; }
+        input { padding: 10px; width: 70%; border: 1px solid #ddd; border-radius: 4px; margin-bottom: 10px; }
+        button { padding: 10px 15px; background-color: #2ecc71; color: white; border: none; border-radius: 4px; cursor: pointer; font-weight: bold; }
+        button:hover { background-color: #27ae60; }
+        #resultado { margin-top: 20px; padding: 15px; border-top: 2px solid #eee; display: none; }
+        .erro { color: #e74c3c; font-weight: bold; }
+    </style>
+</head>
+<body>
+
+<div class="card">
+    <h2>Previsão do Tempo</h2>
+    <input type="text" id="cidadeInput" placeholder="Digite a cidade (ex: Sao Paulo)">
+    <button id="btnBuscar">Buscar</button>
+
+    <div id="resultado">
+        <h3 id="nomeCidade"></h3>
+        <p><strong>Temperatura:</strong> <span id="temp"></span>°C</p>
+        <p><strong>Condição:</strong> <span id="desc"></span></p>
+        <p><strong>Umidade:</strong> <span id="umidade"></span>%</p>
+    </div>
+    <p id="mensagemErro" class="erro" style="display: none;">Cidade não encontrada!</p>
+</div>
+
+<script>
+//    const apiKey = "98464efda2b79d627086b693563e6218"; // <--- COLOQUE SUA CHAVE AQUI
+//    const apiKey = "SUA_CHAVE_AQUI"; // <--- COLOQUE SUA CHAVE AQUI
+//98464efda2b79d627086b693563e6218
+    document.getElementById('btnBuscar').addEventListener('click', function() {
+        const cidade = document.getElementById('cidadeInput').value;
+        const resultadoDiv = document.getElementById('resultado');
+        const erroMsg = document.getElementById('mensagemErro');
+
+        if (!cidade) return alert("Digite o nome de uma cidade!");
+
+        // URL da API (usando template literals para inserir a cidade e a chave)
+        const urlClima = `https://api.openweathermap.org/data/2.5/weather?q=${cidade}&appid=${apiKey}&units=metric&lang=pt_br`;
+
+        // Início do AJAX com Fetch
+        fetch(urlClima)
+            .then(response => {
+                if (!response.ok) throw new Error(); // Se a cidade não existir, cai no catch
+                return response.json();
+            })
+            .then(info => {
+                // Esconde erro e mostra resultado
+                erroMsg.style.display = 'none';
+                resultadoDiv.style.display = 'block';
+
+                // Preenche os campos com os dados do JSON
+                document.getElementById('nomeCidade').innerText = info.name;
+                document.getElementById('temp').innerText = info.main.temp.toFixed(1);
+                document.getElementById('desc').innerText = info.weather[0].description;
+                document.getElementById('umidade').innerText = info.main.humidity;
+            })
+            .catch(() => {
+                resultadoDiv.style.display = 'none';
+                erroMsg.style.display = 'block';
+            });
+    });
+</script>
+
+</body>
+</html>
+
