@@ -1,0 +1,37 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <title>Alterar Cor de Fundo</title>
+
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            text-align: center;
+            margin-top: 100px;
+            transition: background-color 0.5s;
+        }
+
+        button {
+            padding: 10px 20px;
+            font-size: 16px;
+            cursor: pointer;
+        }
+    </style>
+</head>
+
+<body>
+
+    <h1>Exemplo de Evento</h1>
+    <button id="btnCor">Mudar Cor</button>
+
+    <script>
+        const botao = document.getElementById("btnCor");
+
+        botao.addEventListener("click", () => {
+            document.body.style.backgroundColor = "lightblue";
+        });
+    </script>
+
+</body>
+</html>

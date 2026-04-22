@@ -1,0 +1,42 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <title>Preencher Campo</title>
+
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            text-align: center;
+            margin-top: 100px;
+            transition: background-color 0.5s;
+        }
+
+        button {
+            padding: 10px 20px;
+            font-size: 16px;
+            cursor: pointer;
+        }
+    </style>
+</head>
+
+<body>
+<form id="form">
+    <input type="text" id="nome">
+    <button type="submit">Enviar</button>
+</form>
+     
+    <script>
+    const form = document.getElementById("form");
+const nome = document.getElementById("nome");
+
+form.addEventListener("submit", (e) => {
+    if (nome.value === "") {
+        e.preventDefault();
+        alert("Preencha o campo!");
+    }
+});
+    </script>
+
+</body>
+</html>

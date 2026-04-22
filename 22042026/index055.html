@@ -1,0 +1,57 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <title>Contato EmailJS</title>
+</head>
+<body>
+
+<h2>Formulario de Contato</h2>
+
+<input type="text" id="nome" placeholder="Seu nome"><br>
+<input type="email" id="email" placeholder="Seu email"><br>
+<textarea id="mensagem" placeholder="Mensagem"></textarea><br>
+
+<button onclick="enviarEmail()">Enviar</button>
+
+<p id="status"></p>
+
+<!-- Biblioteca EmailJS -->
+<script src="https://cdn.jsdelivr.net/npm/emailjs-com@3/dist/email.min.js"></script>
+
+<script>
+    (function(){
+        emailjs.init("IeK9IGoaDIzFCtRyH"); // <- você substitui aqui   IeK9IGoaDIzFCtRyH
+        //emailjs.init("SEU_USER_ID"); // <- você substitui aqui   
+    })();
+
+    function enviarEmail() {
+
+        const nome = document.getElementById("nome").value;
+        const email = document.getElementById("email").value;
+        const mensagem = document.getElementById("mensagem").value;
+        const status = document.getElementById("status");
+
+        if (!nome || !email || !mensagem) {
+            status.textContent = "Preencha todos os campos!";
+            return;
+        }
+
+        const templateParams = {
+            from_name: nome,
+            from_email: email,
+            message: mensagem
+        };
+
+        emailjs.send("service_0w2pvfl", "template_ufnpp8w", templateParams)
+        .then(() => {
+            status.textContent = "Email enviado com sucesso!";
+        })
+        .catch(() => {
+            status.textContent = "Erro ao enviar email.";
+        });
+    }
+</script>
+
+</body>
+</html>

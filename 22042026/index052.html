@@ -1,0 +1,61 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <title>Formulario de Contato</title>
+
+    <style>
+        body {
+            font-family: Arial;
+            text-align: center;
+            margin-top: 50px;
+        }
+
+        input, textarea {
+            display: block;
+            margin: 10px auto;
+            padding: 10px;
+            width: 250px;
+        }
+
+        button {
+            padding: 10px 20px;
+        }
+    </style>
+</head>
+<body>
+
+    <h2>Formulario de Contato</h2>
+
+    <input type="text" id="nome" placeholder="Seu nome">
+    <input type="email" id="email" placeholder="Seu email">
+    <textarea id="mensagem" placeholder="Digite sua mensagem"></textarea>
+
+    <button id="btn">Enviar</button>
+
+    <p id="saida"></p>
+
+    <script>
+        const botao = document.getElementById("btn");
+        const nome = document.getElementById("nome");
+        const email = document.getElementById("email");
+        const mensagem = document.getElementById("mensagem");
+        const saida = document.getElementById("saida");
+
+        botao.addEventListener("click", () => {
+            if (nome.value === "" || email.value === "" || mensagem.value === "") {
+                saida.textContent = "Preencha todos os campos!";
+                return;
+            }
+
+            // Simulacao de envio
+            saida.textContent = "Mensagem enviada com sucesso!";
+            
+            console.log("Nome:", nome.value);
+            console.log("Email:", email.value);
+            console.log("Mensagem:", mensagem.value);
+        });
+    </script>
+
+</body>
+</html>
