@@ -111,7 +111,7 @@ int main() {
         "Samuel",
         "Tatiane",
         "Victor",
-        "Wagner"
+        "Will"
     };
 
     for (int i = 0; i < 20; i++) {
