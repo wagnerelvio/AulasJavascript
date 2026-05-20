@@ -1,0 +1,147 @@
+<!DOCTYPE html>
+<html lang="pt-br" ng-app="appCep">
+<head>
+    <meta charset="UTF-8">
+    <title>Consulta de CEP</title>
+
+    <script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.8.2/angular.min.js"></script>
+
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #eef3f8;
+            padding: 30px;
+        }
+
+        .container {
+            width: 500px;
+            margin: auto;
+            background-color: white;
+            padding: 25px;
+            border-radius: 12px;
+            box-shadow: 0 0 10px rgba(0,0,0,0.18);
+        }
+
+        h1 {
+            text-align: center;
+            color: #1f4e79;
+        }
+
+        label {
+            font-weight: bold;
+            display: block;
+            margin-top: 12px;
+        }
+
+        input {
+            width: 100%;
+            padding: 9px;
+            margin-top: 5px;
+            border: 1px solid #bbb;
+            border-radius: 6px;
+            box-sizing: border-box;
+        }
+
+        button {
+            width: 100%;
+            margin-top: 18px;
+            padding: 10px;
+            background-color: #1f4e79;
+            color: white;
+            border: none;
+            border-radius: 6px;
+            cursor: pointer;
+        }
+
+        button:hover {
+            background-color: #163957;
+        }
+
+        .resultado {
+            margin-top: 20px;
+            padding: 15px;
+            background-color: #e8f5e9;
+            border-left: 5px solid #2e7d32;
+            border-radius: 6px;
+        }
+
+        .erro {
+            margin-top: 20px;
+            padding: 15px;
+            background-color: #ffebee;
+            border-left: 5px solid #c62828;
+            border-radius: 6px;
+        }
+    </style>
+</head>
+
+<body ng-controller="CepController">
+
+    <div class="container">
+        <h1>Consulta de CEP</h1>
+
+        <label>Digite o CEP:</label>
+        <input type="text" ng-model="cep" placeholder="Exemplo: 01001000">
+
+        <button ng-click="consultarCep()">Consultar CEP</button>
+
+        <div class="resultado" ng-if="endereco">
+            <h3>Endereço encontrado</h3>
+            <p><strong>CEP:</strong> {{ endereco.cep }}</p>
+            <p><strong>Logradouro:</strong> {{ endereco.logradouro }}</p>
+            <p><strong>Bairro:</strong> {{ endereco.bairro }}</p>
+            <p><strong>Cidade:</strong> {{ endereco.localidade }}</p>
+            <p><strong>Estado:</strong> {{ endereco.uf }}</p>
+        </div>
+
+        <div class="erro" ng-if="erro">
+            {{ erro }}
+        </div>
+    </div>
+
+    <script>
+        var app = angular.module("appCep", []);
+
+        app.controller("CepController", function($scope, $http) {
+
+            $scope.cep = "";
+            $scope.endereco = null;
+            $scope.erro = "";
+
+            $scope.consultarCep = function() {
+
+                $scope.endereco = null;
+                $scope.erro = "";
+
+                if (!$scope.cep) {
+                    $scope.erro = "Digite um CEP.";
+                    return;
+                }
+
+                var cepLimpo = $scope.cep.replace(/\D/g, "");
+
+                if (cepLimpo.length !== 8) {
+                    $scope.erro = "O CEP deve conter 8 números.";
+                    return;
+                }
+
+                var url = "https://viacep.com.br/ws/" + cepLimpo + "/json/";
+
+                $http.get(url).then(function(resposta) {
+
+                    if (resposta.data.erro) {
+                        $scope.erro = "CEP não encontrado.";
+                        return;
+                    }
+
+                    $scope.endereco = resposta.data;
+
+                }).catch(function() {
+                    $scope.erro = "Não foi possível consultar o CEP.";
+                });
+            };
+        });
+    </script>
+
+</body>
+</html>
