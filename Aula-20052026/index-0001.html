@@ -1,0 +1,154 @@
+<!DOCTYPE html>
+<html lang="pt-br" ng-app="meuApp">
+<head>
+    <meta charset="UTF-8">
+    <title>Exemplo Simples com AngularJS</title>
+
+    <!-- Biblioteca AngularJS via CDN -->
+    <script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.8.2/angular.min.js"></script>
+
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #eef3f8;
+            margin: 0;
+            padding: 30px;
+        }
+
+        .container {
+            width: 450px;
+            margin: auto;
+            background-color: white;
+            padding: 25px;
+            border-radius: 12px;
+            box-shadow: 0 0 10px rgba(0,0,0,0.18);
+        }
+
+        h1 {
+            text-align: center;
+            color: #1f4e79;
+        }
+
+        label {
+            font-weight: bold;
+            display: block;
+            margin-top: 15px;
+        }
+
+        input {
+            width: 100%;
+            padding: 9px;
+            margin-top: 5px;
+            border: 1px solid #bbb;
+            border-radius: 6px;
+            box-sizing: border-box;
+        }
+
+        button {
+            margin-top: 18px;
+            width: 100%;
+            padding: 10px;
+            background-color: #1f4e79;
+            color: white;
+            border: none;
+            border-radius: 6px;
+            cursor: pointer;
+            font-size: 15px;
+        }
+
+        button:hover {
+            background-color: #163957;
+        }
+
+        .resultado {
+            margin-top: 20px;
+            padding: 15px;
+            background-color: #e8f5e9;
+            border-left: 5px solid #2e7d32;
+            border-radius: 6px;
+        }
+
+        ul {
+            margin-top: 15px;
+        }
+
+        li {
+            margin-bottom: 6px;
+        }
+    </style>
+</head>
+
+<body ng-controller="MeuController">
+
+    <div class="container">
+        <h1>Cadastro Simples</h1>
+
+        <label>Nome:</label>
+        <input type="text" ng-model="usuario.nome" placeholder="Digite seu nome">
+
+        <label>Idade:</label>
+        <input type="number" ng-model="usuario.idade" placeholder="Digite sua idade">
+
+        <label>Cidade:</label>
+        <input type="text" ng-model="usuario.cidade" placeholder="Digite sua cidade">
+
+        <button ng-click="cadastrar()">Cadastrar</button>
+
+        <div class="resultado" ng-if="mensagem">
+            <h3>Dados cadastrados</h3>
+            <p>{{ mensagem }}</p>
+        </div>
+
+        <h3>Lista de alunos cadastrados</h3>
+
+        <ul>
+            <li ng-repeat="aluno in alunos">
+                {{ aluno.nome }} - {{ aluno.idade }} anos - {{ aluno.cidade }}
+            </li>
+        </ul>
+    </div>
+
+    <script>
+        var app = angular.module("meuApp", []);
+
+        app.controller("MeuController", function($scope) {
+
+            $scope.usuario = {
+                nome: "",
+                idade: "",
+                cidade: ""
+            };
+
+            $scope.alunos = [];
+
+            $scope.mensagem = "";
+
+            $scope.cadastrar = function() {
+
+                if (!$scope.usuario.nome || !$scope.usuario.idade || !$scope.usuario.cidade) {
+                    $scope.mensagem = "Preencha todos os campos antes de cadastrar.";
+                    return;
+                }
+
+                $scope.alunos.push({
+                    nome: $scope.usuario.nome,
+                    idade: $scope.usuario.idade,
+                    cidade: $scope.usuario.cidade
+                });
+
+                $scope.mensagem =
+                    "Nome: " + $scope.usuario.nome +
+                    " | Idade: " + $scope.usuario.idade +
+                    " | Cidade: " + $scope.usuario.cidade;
+
+                $scope.usuario = {
+                    nome: "",
+                    idade: "",
+                    cidade: ""
+                };
+            };
+        });
+    </script>
+
+</body>
+</html>
