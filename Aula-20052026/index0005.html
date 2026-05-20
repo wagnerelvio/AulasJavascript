@@ -1,0 +1,190 @@
+<!DOCTYPE html>
+<html lang="pt-br" ng-app="appTarefas">
+<head>
+    <meta charset="UTF-8">
+    <title>Lista de Tarefas</title>
+
+    <script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.8.2/angular.min.js"></script>
+
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f2f5f9;
+            padding: 30px;
+        }
+
+        .container {
+            width: 500px;
+            margin: auto;
+            background-color: white;
+            padding: 25px;
+            border-radius: 12px;
+            box-shadow: 0 0 10px rgba(0,0,0,0.18);
+        }
+
+        h1 {
+            text-align: center;
+            color: #1f4e79;
+        }
+
+        input[type="text"] {
+            width: 100%;
+            padding: 9px;
+            margin-top: 5px;
+            border: 1px solid #bbb;
+            border-radius: 6px;
+            box-sizing: border-box;
+        }
+
+        button {
+            margin-top: 12px;
+            padding: 10px;
+            background-color: #1f4e79;
+            color: white;
+            border: none;
+            border-radius: 6px;
+            cursor: pointer;
+        }
+
+        button:hover {
+            background-color: #163957;
+        }
+
+        .botao-principal {
+            width: 100%;
+        }
+
+        ul {
+            padding-left: 0;
+            list-style: none;
+        }
+
+        li {
+            background-color: #f4f6f8;
+            margin-top: 8px;
+            padding: 10px;
+            border-radius: 6px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .concluida {
+            text-decoration: line-through;
+            color: #777;
+        }
+
+        .remover {
+            background-color: #c62828;
+            padding: 6px 10px;
+        }
+
+        .resumo {
+            margin-top: 15px;
+            padding: 12px;
+            background-color: #e8f5e9;
+            border-left: 5px solid #2e7d32;
+            border-radius: 6px;
+        }
+
+        .erro {
+            margin-top: 15px;
+            padding: 12px;
+            background-color: #ffebee;
+            border-left: 5px solid #c62828;
+            border-radius: 6px;
+        }
+    </style>
+</head>
+
+<body ng-controller="TarefasController">
+
+    <div class="container">
+        <h1>Lista de Tarefas</h1>
+
+        <label>Nova tarefa:</label>
+        <input type="text" ng-model="novaTarefa" placeholder="Exemplo: estudar AngularJS">
+
+        <button class="botao-principal" ng-click="adicionarTarefa()">
+            Adicionar Tarefa
+        </button>
+
+        <div class="erro" ng-if="erro">
+            {{ erro }}
+        </div>
+
+        <h3>Tarefas</h3>
+
+        <ul>
+            <li ng-repeat="tarefa in tarefas">
+                <span>
+                    <input type="checkbox" ng-model="tarefa.concluida">
+                    <span ng-class="{concluida: tarefa.concluida}">
+                        {{ tarefa.nome }}
+                    </span>
+                </span>
+
+                <button class="remover" ng-click="removerTarefa($index)">
+                    Remover
+                </button>
+            </li>
+        </ul>
+
+        <div class="resumo">
+            <p><strong>Total de tarefas:</strong> {{ tarefas.length }}</p>
+            <p><strong>Tarefas concluídas:</strong> {{ contarConcluidas() }}</p>
+            <p><strong>Tarefas pendentes:</strong> {{ tarefas.length - contarConcluidas() }}</p>
+        </div>
+    </div>
+
+    <script>
+        var app = angular.module("appTarefas", []);
+
+        app.controller("TarefasController", function($scope) {
+
+            $scope.novaTarefa = "";
+            $scope.erro = "";
+
+            $scope.tarefas = [
+                { nome: "Estudar AngularJS", concluida: false },
+                { nome: "Fazer atividade prática", concluida: false },
+                { nome: "Testar código no OneCompiler", concluida: true }
+            ];
+
+            $scope.adicionarTarefa = function() {
+
+                $scope.erro = "";
+
+                if (!$scope.novaTarefa) {
+                    $scope.erro = "Digite uma tarefa antes de adicionar.";
+                    return;
+                }
+
+                $scope.tarefas.push({
+                    nome: $scope.novaTarefa,
+                    concluida: false
+                });
+
+                $scope.novaTarefa = "";
+            };
+
+            $scope.removerTarefa = function(indice) {
+                $scope.tarefas.splice(indice, 1);
+            };
+
+            $scope.contarConcluidas = function() {
+                var total = 0;
+
+                for (var i = 0; i < $scope.tarefas.length; i++) {
+                    if ($scope.tarefas[i].concluida) {
+                        total++;
+                    }
+                }
+
+                return total;
+            };
+        });
+    </script>
+
+</body>
+</html>
