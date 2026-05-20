@@ -1,0 +1,195 @@
+<!DOCTYPE html>
+<html lang="pt-br" ng-app="appClima">
+<head>
+    <meta charset="UTF-8">
+    <title>Consulta de Temperatura com AngularJS</title>
+
+    <!-- AngularJS via CDN -->
+    <script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.8.2/angular.min.js"></script>
+
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #eef3f8;
+            margin: 0;
+            padding: 30px;
+        }
+
+        .container {
+            width: 480px;
+            margin: auto;
+            background-color: white;
+            padding: 25px;
+            border-radius: 12px;
+            box-shadow: 0 0 10px rgba(0,0,0,0.18);
+        }
+
+        h1 {
+            text-align: center;
+            color: #1f4e79;
+        }
+
+        label {
+            font-weight: bold;
+            display: block;
+            margin-top: 15px;
+        }
+
+        input {
+            width: 100%;
+            padding: 9px;
+            margin-top: 5px;
+            border: 1px solid #bbb;
+            border-radius: 6px;
+            box-sizing: border-box;
+        }
+
+        button {
+            margin-top: 18px;
+            width: 100%;
+            padding: 10px;
+            background-color: #1f4e79;
+            color: white;
+            border: none;
+            border-radius: 6px;
+            cursor: pointer;
+            font-size: 15px;
+        }
+
+        button:hover {
+            background-color: #163957;
+        }
+
+        .resultado {
+            margin-top: 20px;
+            padding: 15px;
+            background-color: #e8f5e9;
+            border-left: 5px solid #2e7d32;
+            border-radius: 6px;
+        }
+
+        .erro {
+            margin-top: 20px;
+            padding: 15px;
+            background-color: #ffebee;
+            border-left: 5px solid #c62828;
+            border-radius: 6px;
+        }
+
+        .carregando {
+            margin-top: 15px;
+            color: #1f4e79;
+            font-weight: bold;
+        }
+    </style>
+</head>
+
+<body ng-controller="ClimaController">
+
+    <div class="container">
+        <h1>Consulta de Temperatura</h1>
+
+        <label>Digite o nome da cidade:</label>
+        <input 
+            type="text" 
+            ng-model="cidade" 
+            placeholder="Exemplo: São Luís, Fortaleza, Teresina"
+        >
+
+        <button ng-click="consultarTemperatura()">
+            Consultar Temperatura
+        </button>
+
+        <p class="carregando" ng-if="carregando">
+            Consultando dados...
+        </p>
+
+        <div class="resultado" ng-if="resultado">
+            <h3>Resultado da consulta</h3>
+
+            <p><strong>Cidade:</strong> {{ resultado.nome }}</p>
+            <p><strong>País:</strong> {{ resultado.pais }}</p>
+            <p><strong>Latitude:</strong> {{ resultado.latitude }}</p>
+            <p><strong>Longitude:</strong> {{ resultado.longitude }}</p>
+            <p><strong>Temperatura atual:</strong> {{ resultado.temperatura }} °C</p>
+            <p><strong>Horário da leitura:</strong> {{ resultado.horario }}</p>
+        </div>
+
+        <div class="erro" ng-if="erro">
+            <strong>Atenção:</strong> {{ erro }}
+        </div>
+    </div>
+
+    <script>
+        var app = angular.module("appClima", []);
+
+        app.controller("ClimaController", function($scope, $http) {
+
+            $scope.cidade = "";
+            $scope.resultado = null;
+            $scope.erro = "";
+            $scope.carregando = false;
+
+            $scope.consultarTemperatura = function() {
+
+                $scope.resultado = null;
+                $scope.erro = "";
+
+                if (!$scope.cidade) {
+                    $scope.erro = "Digite o nome de uma cidade.";
+                    return;
+                }
+
+                $scope.carregando = true;
+
+                var urlCidade = 
+                    "https://geocoding-api.open-meteo.com/v1/search?name=" +
+                    encodeURIComponent($scope.cidade) +
+                    "&count=1&language=pt&format=json";
+
+                $http.get(urlCidade).then(function(respostaCidade) {
+
+                    if (!respostaCidade.data.results || respostaCidade.data.results.length === 0) {
+                        $scope.erro = "Cidade não encontrada.";
+                        $scope.carregando = false;
+                        return;
+                    }
+
+                    var local = respostaCidade.data.results[0];
+
+                    var latitude = local.latitude;
+                    var longitude = local.longitude;
+
+                    var urlClima =
+                        "https://api.open-meteo.com/v1/forecast?latitude=" +
+                        latitude +
+                        "&longitude=" +
+                        longitude +
+                        "&current_weather=true";
+
+                    return $http.get(urlClima).then(function(respostaClima) {
+
+                        var climaAtual = respostaClima.data.current_weather;
+
+                        $scope.resultado = {
+                            nome: local.name,
+                            pais: local.country,
+                            latitude: latitude,
+                            longitude: longitude,
+                            temperatura: climaAtual.temperature,
+                            horario: climaAtual.time
+                        };
+
+                        $scope.carregando = false;
+                    });
+
+                }).catch(function() {
+                    $scope.erro = "Não foi possível consultar a API no momento.";
+                    $scope.carregando = false;
+                });
+            };
+        });
+    </script>
+
+</body>
+</html>
