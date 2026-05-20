@@ -1,0 +1,124 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <title>Enviar Mensagem pelo Bot do Telegram</title>
+
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f3f3f3;
+            padding: 30px;
+        }
+
+        .container {
+            max-width: 500px;
+            margin: auto;
+            background-color: white;
+            padding: 25px;
+            border-radius: 10px;
+            box-shadow: 0 0 10px #ccc;
+        }
+
+        h2 {
+            text-align: center;
+        }
+
+        label {
+            font-weight: bold;
+        }
+
+        input, textarea, button {
+            width: 100%;
+            margin-top: 8px;
+            margin-bottom: 15px;
+            padding: 10px;
+            font-size: 15px;
+        }
+
+        button {
+            background-color: #0088cc;
+            color: white;
+            border: none;
+            cursor: pointer;
+            border-radius: 5px;
+        }
+
+        button:hover {
+            background-color: #006fa6;
+        }
+
+        #resposta {
+            font-weight: bold;
+            text-align: center;
+        }
+    </style>
+</head>
+
+<body>
+
+    <div class="container">
+        <h2>Envio de Mensagem pelo Telegram</h2>
+
+        <label for="token">Token do Bot:</label>
+        <input type="text" id="token" placeholder="Digite o token do bot">
+
+        <label for="chatid">Chat ID:</label>
+        <input type="text" id="chatid" placeholder="Digite o chat_id">
+
+        <label for="mensagem">Mensagem:</label>
+        <textarea id="mensagem" rows="5" placeholder="Digite a mensagem"></textarea>
+
+        <button onclick="enviarMensagem()">Enviar Mensagem</button>
+
+        <p id="resposta"></p>
+    </div>
+
+    <script>
+        function enviarMensagem() {
+            const token = document.getElementById("token").value;
+            const chatId = document.getElementById("chatid").value;
+            const mensagem = document.getElementById("mensagem").value;
+            const resposta = document.getElementById("resposta");
+
+            if (token === "" || chatId === "" || mensagem === "") {
+                resposta.style.color = "red";
+                resposta.textContent = "Preencha todos os campos.";
+                return;
+            }
+
+            const url = `https://api.telegram.org/bot${token}/sendMessage`;
+
+            const dados = {
+                chat_id: chatId,
+                text: mensagem
+            };
+
+            fetch(url, {
+                method: "POST",
+                headers: {
+                    "Content-Type": "application/json"
+                },
+                body: JSON.stringify(dados)
+            })
+            .then(response => response.json())
+            .then(data => {
+                if (data.ok) {
+                    resposta.style.color = "green";
+                    resposta.textContent = "Mensagem enviada com sucesso!";
+                } else {
+                    resposta.style.color = "red";
+                    resposta.textContent = "Erro ao enviar mensagem.";
+                    console.log(data);
+                }
+            })
+            .catch(error => {
+                resposta.style.color = "red";
+                resposta.textContent = "Erro de conexão com a API.";
+                console.error("Erro:", error);
+            });
+        }
+    </script>
+
+</body>
+</html>
