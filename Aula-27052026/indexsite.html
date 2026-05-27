@@ -1,0 +1,287 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+  <meta charset="UTF-8">
+  <title>Leitura de Sensores - ThingSpeak</title>
+
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      background-color: #eef2f6;
+      margin: 0;
+      padding: 30px;
+    }
+
+    .container {
+      max-width: 900px;
+      margin: auto;
+      background-color: #ffffff;
+      padding: 25px;
+      border-radius: 12px;
+      box-shadow: 0 0 12px rgba(0, 0, 0, 0.15);
+    }
+
+    h1 {
+      text-align: center;
+      color: #1f4e79;
+      margin-bottom: 10px;
+    }
+
+    .subtitulo {
+      text-align: center;
+      color: #555;
+      margin-bottom: 25px;
+    }
+
+    .resumo {
+      display: grid;
+      grid-template-columns: repeat(2, 1fr);
+      gap: 15px;
+      margin-bottom: 25px;
+    }
+
+    .info-box {
+      background-color: #f7fbff;
+      border-left: 5px solid #1f4e79;
+      padding: 15px;
+      border-radius: 8px;
+    }
+
+    .info-box h3 {
+      margin: 0 0 8px 0;
+      color: #1f4e79;
+    }
+
+    .info-box p {
+      margin: 0;
+      font-size: 18px;
+      font-weight: bold;
+    }
+
+    .sensores {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 15px;
+    }
+
+    .card {
+      background-color: #f7fbff;
+      padding: 18px;
+      border-radius: 10px;
+      text-align: center;
+      border-top: 5px solid #1f4e79;
+    }
+
+    .card h2 {
+      margin-top: 0;
+      color: #1f4e79;
+      font-size: 20px;
+    }
+
+    .valor {
+      font-size: 28px;
+      font-weight: bold;
+      color: #222;
+    }
+
+    .unidade {
+      font-size: 16px;
+      color: #555;
+    }
+
+    button {
+      display: block;
+      margin: 25px auto 0 auto;
+      padding: 12px 20px;
+      background-color: #1f4e79;
+      color: white;
+      border: none;
+      border-radius: 6px;
+      font-size: 16px;
+      cursor: pointer;
+    }
+
+    button:hover {
+      background-color: #163b5c;
+    }
+
+    .erro {
+      color: #b00020;
+      text-align: center;
+      font-weight: bold;
+      margin-top: 20px;
+    }
+
+    .rodape {
+      text-align: center;
+      color: #666;
+      margin-top: 20px;
+      font-size: 14px;
+    }
+
+    @media (max-width: 800px) {
+      .sensores {
+        grid-template-columns: repeat(2, 1fr);
+      }
+
+      .resumo {
+        grid-template-columns: 1fr;
+      }
+    }
+
+    @media (max-width: 500px) {
+      .sensores {
+        grid-template-columns: 1fr;
+      }
+    }
+  </style>
+</head>
+
+<body>
+
+  <div class="container">
+    <h1>Monitoramento de Sensores</h1>
+    <p class="subtitulo">Leitura dos dados armazenados no canal ThingSpeak</p>
+
+    <div class="resumo">
+      <div class="info-box">
+        <h3>Quantidade de valores armazenados</h3>
+        <p id="quantidade">Carregando...</p>
+      </div>
+
+      <div class="info-box">
+        <h3>Data e hora da última leitura</h3>
+        <p id="horario">Carregando...</p>
+      </div>
+    </div>
+
+    <div class="sensores">
+      <div class="card">
+        <h2>Sensor 1</h2>
+        <div class="valor" id="sensor1">--</div>
+        <div class="unidade">field1</div>
+      </div>
+
+      <div class="card">
+        <h2>Sensor 2</h2>
+        <div class="valor" id="sensor2">--</div>
+        <div class="unidade">field2</div>
+      </div>
+
+      <div class="card">
+        <h2>Sensor 3</h2>
+        <div class="valor" id="sensor3">--</div>
+        <div class="unidade">field3</div>
+      </div>
+
+      <div class="card">
+        <h2>Sensor 4</h2>
+        <div class="valor" id="sensor4">--</div>
+        <div class="unidade">field4</div>
+      </div>
+    </div>
+
+    <button onclick="buscarDadosThingSpeak()">Atualizar leitura</button>
+
+    <p class="erro" id="erro"></p>
+
+    
+<p class="rodape">
+  Os dados são atualizados automaticamente a cada 20 segundos.
+</p>
+
+<p class="rodape">
+  Data e hora atual: <span id="relogio">--</span>
+</p>
+
+
+  </div>
+
+  <script>
+    /*
+      Substitua pelo ID do seu canal ThingSpeak.
+
+      Se o canal for público:
+      deixe READ_API_KEY vazio.
+
+      Se o canal for privado:
+      coloque a Read API Key entre as aspas.
+    */
+
+    const CHANNEL_ID = "2716264";
+    const READ_API_KEY = "E33PVEXBNZSLHZNL";
+
+    function formatarDataHora(dataThingSpeak) {
+      if (!dataThingSpeak) {
+        return "Data não disponível";
+      }
+
+      return new Date(dataThingSpeak).toLocaleString("pt-BR", {
+        timeZone: "America/Fortaleza"
+      });
+    }
+
+    function mostrarValor(valor) {
+      if (valor === null || valor === undefined || valor === "") {
+        return "Sem dado";
+      }
+
+      return valor + " °C";
+    }
+
+    async function buscarDadosThingSpeak() {
+      const erro = document.getElementById("erro");
+      erro.textContent = "";
+
+      try {
+        let url = `https://api.thingspeak.com/channels/${CHANNEL_ID}/feeds.json?results=1`;
+
+        if (READ_API_KEY !== "") {
+          url += `&api_key=${READ_API_KEY}`;
+        }
+
+        const resposta = await fetch(url);
+        const dados = await resposta.json();
+
+        if (!dados || !dados.channel || !dados.feeds || dados.feeds.length === 0) {
+          erro.textContent = "Não foi possível carregar os dados do ThingSpeak.";
+          return;
+        }
+
+        const canal = dados.channel;
+        const ultimaLeitura = dados.feeds[0];
+
+        document.getElementById("sensor1").textContent = mostrarValor(ultimaLeitura.field1);
+        document.getElementById("sensor2").textContent = mostrarValor(ultimaLeitura.field2);
+        document.getElementById("sensor3").textContent = mostrarValor(ultimaLeitura.field3);
+        document.getElementById("sensor4").textContent = mostrarValor(ultimaLeitura.field4);
+
+        document.getElementById("quantidade").textContent = canal.last_entry_id;
+        document.getElementById("horario").textContent = formatarDataHora(ultimaLeitura.created_at);
+
+      } catch (e) {
+        erro.textContent = "Erro ao consultar a API do ThingSpeak.";
+      }
+    }
+
+buscarDadosThingSpeak();
+
+setInterval(buscarDadosThingSpeak, 20000);
+
+function atualizarRelogio() {
+  const agora = new Date();
+
+  const dataHoraFormatada = agora.toLocaleString("pt-BR", {
+    timeZone: "America/Fortaleza"
+  });
+
+  document.getElementById("relogio").textContent = dataHoraFormatada;
+}
+
+atualizarRelogio();
+
+setInterval(atualizarRelogio, 1000);
+  </script>
+
+</body>
+</html>
