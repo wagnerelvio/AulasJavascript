@@ -1,0 +1,180 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+  <meta charset="UTF-8">
+  <title>Temperatura com React</title>
+
+  <!-- React via CDN -->
+  <script src="https://unpkg.com/react@18/umd/react.development.js"></script>
+  <script src="https://unpkg.com/react-dom@18/umd/react-dom.development.js"></script>
+
+  <!-- Babel para permitir JSX no navegador -->
+  <script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
+
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      background-color: #f2f4f8;
+      padding: 30px;
+    }
+
+    .container {
+      background-color: white;
+      max-width: 550px;
+      margin: auto;
+      padding: 25px;
+      border-radius: 10px;
+      box-shadow: 0 0 12px rgba(0, 0, 0, 0.15);
+      text-align: center;
+    }
+
+    h1 {
+      color: #1f4e79;
+    }
+
+    input {
+      padding: 10px;
+      width: 70%;
+      border: 1px solid #ccc;
+      border-radius: 6px;
+      font-size: 16px;
+    }
+
+    button {
+      margin-left: 8px;
+      padding: 10px 14px;
+      border: none;
+      border-radius: 6px;
+      background-color: #1f4e79;
+      color: white;
+      font-size: 16px;
+      cursor: pointer;
+    }
+
+    button:hover {
+      background-color: #163b5c;
+    }
+
+    .resultado {
+      margin-top: 25px;
+      padding: 15px;
+      background-color: #eef5fb;
+      border-radius: 8px;
+      font-size: 18px;
+    }
+
+    .erro {
+      margin-top: 20px;
+      color: #b00020;
+      font-weight: bold;
+    }
+  </style>
+</head>
+
+<body>
+
+  <div id="root"></div>
+
+  <script type="text/babel">
+    function App() {
+      const [cidade, setCidade] = React.useState("");
+      const [resultado, setResultado] = React.useState(null);
+      const [erro, setErro] = React.useState("");
+      const [carregando, setCarregando] = React.useState(false);
+
+      async function consultarTemperatura() {
+        setErro("");
+        setResultado(null);
+
+        if (cidade.trim() === "") {
+          setErro("Digite o nome de uma cidade.");
+          return;
+        }
+
+        try {
+          setCarregando(true);
+
+          // 1. Busca as coordenadas da cidade
+          const urlCidade =
+            `https://geocoding-api.open-meteo.com/v1/search?name=${cidade}&count=1&language=pt&format=json`;
+
+          const respostaCidade = await fetch(urlCidade);
+          const dadosCidade = await respostaCidade.json();
+
+          if (!dadosCidade.results || dadosCidade.results.length === 0) {
+            setErro("Cidade não encontrada.");
+            setCarregando(false);
+            return;
+          }
+
+          const local = dadosCidade.results[0];
+
+          const latitude = local.latitude;
+          const longitude = local.longitude;
+          const nomeCidade = local.name;
+          const pais = local.country;
+
+          // 2. Consulta a temperatura atual usando latitude e longitude
+          const urlTemperatura =
+            `https://api.open-meteo.com/v1/forecast?latitude=${latitude}&longitude=${longitude}&current=temperature_2m&timezone=auto`;
+
+          const respostaTemperatura = await fetch(urlTemperatura);
+          const dadosTemperatura = await respostaTemperatura.json();
+
+          const temperatura = dadosTemperatura.current.temperature_2m;
+          const unidade = dadosTemperatura.current_units.temperature_2m;
+          const horario = dadosTemperatura.current.time;
+
+          setResultado({
+            cidade: nomeCidade,
+            pais: pais,
+            temperatura: temperatura,
+            unidade: unidade,
+            horario: horario
+          });
+
+        } catch (e) {
+          setErro("Erro ao consultar a API.");
+        }
+
+        setCarregando(false);
+      }
+
+      return (
+        <div className="container">
+          <h1>Consulta de Temperatura</h1>
+
+          <p>Digite o nome de uma cidade para consultar a temperatura atual.</p>
+
+          <input
+            type="text"
+            placeholder="Exemplo: São Luís"
+            value={cidade}
+            onChange={(e) => setCidade(e.target.value)}
+          />
+
+          <button onClick={consultarTemperatura}>
+            Consultar
+          </button>
+
+          {carregando && <p>Consultando...</p>}
+
+          {erro && <div className="erro">{erro}</div>}
+
+          {resultado && (
+            <div className="resultado">
+              <p><strong>Cidade:</strong> {resultado.cidade} - {resultado.pais}</p>
+              <p><strong>Temperatura:</strong> {resultado.temperatura} {resultado.unidade}</p>
+              <p><strong>Horário da leitura:</strong> {resultado.horario}</p>
+            </div>
+          )}
+        </div>
+      );
+    }
+
+    const root = ReactDOM.createRoot(document.getElementById("root"));
+    root.render(<App />);
+  </script>
+
+</body>
+</html>
