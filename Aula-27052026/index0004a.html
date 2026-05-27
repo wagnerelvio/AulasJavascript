@@ -1,0 +1,249 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+  <meta charset="UTF-8">
+  <title>Leitura de Sensores - ThingSpeak</title>
+
+  <!-- React via CDN -->
+  <script src="https://unpkg.com/react@18/umd/react.development.js"></script>
+  <script src="https://unpkg.com/react-dom@18/umd/react-dom.development.js"></script>
+
+  <!-- Babel para permitir JSX no navegador -->
+  <script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
+
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      background-color: #eef2f6;
+      padding: 30px;
+    }
+
+    .container {
+      max-width: 800px;
+      margin: auto;
+      background-color: white;
+      padding: 25px;
+      border-radius: 10px;
+      box-shadow: 0 0 12px rgba(0,0,0,0.15);
+    }
+
+    h1 {
+      text-align: center;
+      color: #1f4e79;
+    }
+
+    .info {
+      text-align: center;
+      margin-bottom: 20px;
+      color: #444;
+    }
+
+    .sensores {
+      display: grid;
+      grid-template-columns: repeat(2, 1fr);
+      gap: 15px;
+    }
+
+    .card {
+      background-color: #f7fbff;
+      border-left: 5px solid #1f4e79;
+      padding: 15px;
+      border-radius: 8px;
+    }
+
+    .card h2 {
+      margin-top: 0;
+      color: #1f4e79;
+      font-size: 20px;
+    }
+
+    .valor {
+      font-size: 24px;
+      font-weight: bold;
+      color: #222;
+    }
+
+    button {
+      display: block;
+      margin: 25px auto 0 auto;
+      padding: 10px 18px;
+      background-color: #1f4e79;
+      color: white;
+      border: none;
+      border-radius: 6px;
+      font-size: 16px;
+      cursor: pointer;
+    }
+
+    button:hover {
+      background-color: #163b5c;
+    }
+
+    .erro {
+      color: #b00020;
+      text-align: center;
+      font-weight: bold;
+      margin-top: 15px;
+    }
+
+    .horario {
+      font-size: 15px;
+      color: #333;
+    }
+
+    @media (max-width: 600px) {
+      .sensores {
+        grid-template-columns: 1fr;
+      }
+    }
+  </style>
+</head>
+
+<body>
+
+  <div id="root"></div>
+
+  <script type="text/babel">
+    function App() {
+      const [dados, setDados] = React.useState(null);
+      const [erro, setErro] = React.useState("");
+      const [carregando, setCarregando] = React.useState(false);
+
+      /*
+        Substitua SEU_CHANNEL_ID pelo ID do seu canal ThingSpeak.
+
+        Se o canal for público:
+        deixe READ_API_KEY vazio.
+
+        Se o canal for privado:
+        coloque a Read API Key dentro das aspas.
+      */
+      const CHANNEL_ID = "2716264";
+      const READ_API_KEY = "E33PVEXBNZSLHZNL";
+
+      function formatarHorario(dataThingSpeak) {
+        if (!dataThingSpeak) {
+          return "Horário não disponível";
+        }
+
+        return new Date(dataThingSpeak).toLocaleString("pt-BR");
+      }
+
+      async function lerDadosThingSpeak() {
+        setErro("");
+        setCarregando(true);
+
+        try {
+          let url = `https://api.thingspeak.com/channels/${CHANNEL_ID}/feeds/last.json`;
+
+          if (READ_API_KEY !== "") {
+            url += `?api_key=${READ_API_KEY}`;
+          }
+
+          const resposta = await fetch(url);
+          const leitura = await resposta.json();
+
+          if (!leitura || leitura.entry_id === undefined) {
+            setErro("Não foi possível ler os dados do canal.");
+            setDados(null);
+          } else {
+            setDados(leitura);
+          }
+
+        } catch (e) {
+          setErro("Erro ao consultar a API do ThingSpeak.");
+          setDados(null);
+        }
+
+        setCarregando(false);
+      }
+
+      React.useEffect(() => {
+        lerDadosThingSpeak();
+
+        const intervalo = setInterval(() => {
+          lerDadosThingSpeak();
+        }, 20000);
+
+        return () => clearInterval(intervalo);
+      }, []);
+
+      return (
+        <div className="container">
+          <h1>Leitura de Sensores no ThingSpeak</h1>
+
+          <p className="info">
+            Leitura dos campos field1, field2, field3 e field4.
+          </p>
+
+          {carregando && <p className="info">Consultando dados...</p>}
+
+          {erro && <p className="erro">{erro}</p>}
+
+          {dados && (
+            <>
+              <p className="info">
+                <strong>Última coleta:</strong> {formatarHorario(dados.created_at)}
+              </p>
+
+              <div className="sensores">
+
+                <div className="card">
+                  <h2>Sensor 1</h2>
+                  <p className="horario">
+                    Horário da coleta: {formatarHorario(dados.created_at)}
+                  </p>
+                  <p className="valor">
+                    {dados.field1 !== null ? dados.field1 : "Sem dado"}
+                  </p>
+                </div>
+
+                <div className="card">
+                  <h2>Sensor 2</h2>
+                  <p className="horario">
+                    Horário da coleta: {formatarHorario(dados.created_at)}
+                  </p>                  
+                  <p className="valor">
+                    {dados.field2 !== null ? dados.field2 : "Sem dado"}
+                  </p>
+                </div>
+
+                <div className="card">
+                  <h2>Sensor 3</h2>
+                  <p className="horario">
+                    Horário da coleta: {formatarHorario(dados.created_at)}
+                  </p>
+                  <p className="valor">
+                    {dados.field3 !== null ? dados.field3 : "Sem dado"}
+                  </p>
+                </div>
+
+                <div className="card">
+                  <h2>Sensor 4</h2>
+
+                  <p className="horario">
+                    Horário da coleta: {formatarHorario(dados.created_at)}
+                  </p>
+
+                  <p className="valor">
+                    {dados.field4 !== null ? dados.field4 : "Sem dado"}
+                  </p>
+                </div>
+
+              </div>
+            </>
+          )}
+
+          <button onClick={lerDadosThingSpeak}>
+            Atualizar agora
+          </button>
+        </div>
+      );
+    }
+
+    const root = ReactDOM.createRoot(document.getElementById("root"));
+    root.render(<App />);
+  </script>
+
+</body>
+</html>
