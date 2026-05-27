@@ -1,0 +1,89 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+  <meta charset="UTF-8">
+  <title>Exemplo simples com React</title>
+
+  <!-- React via CDN -->
+  <script src="https://unpkg.com/react@18/umd/react.development.js"></script>
+  <script src="https://unpkg.com/react-dom@18/umd/react-dom.development.js"></script>
+
+  <!-- Babel permite escrever JSX direto no navegador -->
+  <script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
+
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      background-color: #f2f4f8;
+      padding: 30px;
+    }
+
+    .caixa {
+      background-color: white;
+      max-width: 500px;
+      margin: auto;
+      padding: 25px;
+      border-radius: 10px;
+      box-shadow: 0 0 10px rgba(0,0,0,0.15);
+      text-align: center;
+    }
+
+    h1 {
+      color: #1f4e79;
+    }
+
+    button {
+      background-color: #1f4e79;
+      color: white;
+      border: none;
+      padding: 10px 18px;
+      border-radius: 6px;
+      cursor: pointer;
+      font-size: 16px;
+    }
+
+    button:hover {
+      background-color: #163b5c;
+    }
+
+    .contador {
+      font-size: 22px;
+      margin: 20px 0;
+      font-weight: bold;
+    }
+  </style>
+</head>
+
+<body>
+
+  <div id="root"></div>
+
+  <script type="text/babel">
+    function App() {
+      const [contador, setContador] = React.useState(0);
+
+      return (
+        <div className="caixa">
+          <h1>Exemplo simples com React</h1>
+
+          <p>
+            Este exemplo está usando React com JavaScript em um único arquivo HTML.
+          </p>
+
+          <div className="contador">
+            Contador: {contador}
+          </div>
+
+          <button onClick={() => setContador(contador + 1)}>
+            Aumentar
+          </button>
+        </div>
+      );
+    }
+
+    const root = ReactDOM.createRoot(document.getElementById("root"));
+    root.render(<App />);
+  </script>
+
+</body>
+</html>
