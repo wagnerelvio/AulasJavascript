@@ -1,0 +1,1 @@
+https://api.thingspeak.com/channels/2716264/feeds/last.json?api_key=E33PVEXBNZSLHZNL
